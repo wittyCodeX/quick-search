@@ -2,19 +2,17 @@ import { Genre, Movie } from './index.types'
 import * as Movies from './db.json'
 
 export const getFilteredMovies = ({ genres }: { genres: Genre[] }): Movie[] => {
-  const movies = Movies.movies
-  let matchingMovies = []
 
   if (genres.length === 0) {
-    const randomIndex = Math.floor(Math.random() * movies.length)
-    return [movies[randomIndex]]
+    const randomIndex = Math.floor(Math.random() * Movies.movies.length)
+    return [Movies.movies[randomIndex]]
   }
 
-  const threeMatchedMovies = []
-  const twoMatchedMovies = []
-  const oneMatchedMovies = []
+  let threeMatchedMovies: Movie[] = []
+  let twoMatchedMovies: Movie[] = []
+  let oneMatchedMovies: Movie[] = []
 
-  for (const movie of movies) {
+  Movies.movies.forEach((movie: Movie) => {
     const count = compareGenre(genres, movie.genres)
     switch (count) {
       case 3:
@@ -32,19 +30,18 @@ export const getFilteredMovies = ({ genres }: { genres: Genre[] }): Movie[] => {
       default:
         break
     }
-  }
+  });
 
-  matchingMovies = [...threeMatchedMovies, ...twoMatchedMovies, ...oneMatchedMovies]
-  return matchingMovies
+  return  [...threeMatchedMovies, ...twoMatchedMovies, ...oneMatchedMovies]
 }
 
 function compareGenre(genres: Genre[], movieGenres: string[]): Number {
   let count = 0
-  for (const elem of genres) {
+  genres.forEach(elem => {
     if (movieGenres.includes(elem)) {
       count++
     }
-  }
+  })
   if (movieGenres.length === count) return count
   else return 0
 }
